@@ -30,7 +30,7 @@ class AppConfig(BaseModel):
     default_llm: dict = {
         "class_name": "langchain.chat_models.ChatOpenAI",
         "temperature": 0,
-        "model_name": "gpt-3.5-turbo",
+        "model_name": "gpt-4",
     }
     # Vector store
     default_vector_store: dict = {

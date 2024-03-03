@@ -138,7 +138,7 @@ class AppPipeline:
 
     def post_init(self):
         self.graph.to(SessionLoader()).to(name="s1", class_name="RefineQuery").to(
-            name="s2", class_name="MultiRetriever"
+            name="s2", class_name="Agent"
         ).to(HistorySaver()).respond()
         print(self.graph.to_yaml())
 

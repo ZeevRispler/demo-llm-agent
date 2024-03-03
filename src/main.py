@@ -13,7 +13,7 @@ from src.data.sqldb import (
     drop_tables,
     get_db_session,
 )
-
+import pandas as pd
 from .config import config
 from .doc_loader import get_data_loader, get_loader_obj
 from .pipeline import initialize_pipeline
@@ -44,6 +44,25 @@ def initdb():
         db_category="vector",
     )
     session.close()
+
+@click.command()
+def init_bankdb():
+    """Initialize the bank database"""
+    from src.data.bank_db import create_tables, insert_accounts, get_accounts, update_accounts
+    click.echo(f"Running Init Bank DB")
+    create_tables()
+    accounts = pd.DataFrame(
+        {
+            "account_name": ["Alice", "Bob", "jacob"],
+            "account_id": ["1", "2", "3"],
+            "password": [1234, 1111, 2222],
+            "balance": [1000, 1200, 1500],
+        }
+    )
+    if get_accounts().empty:
+        insert_accounts(accounts)
+    else:
+        update_accounts(data=accounts, data_key="account_id", table_key="account_id")
 
 
 @click.command("config")
@@ -230,6 +249,7 @@ def fill_params(params, params_dict=None):
 cli.add_command(ingest)
 cli.add_command(query)
 cli.add_command(initdb)
+cli.add_command(init_bankdb)
 cli.add_command(print_config)
 
 cli.add_command(list)
