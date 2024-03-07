@@ -1,0 +1,7 @@
+user_id,password,first_name,last_name,date_of_birth,email,phone,address
+1,1234,John,Doe,1990-05-15,john.doe@example.com,+1234567890,"123 Main St, Cityville, USA"
+2,1234,Jane,Smith,1985-09-25,jane.smith@example.com,+1987654321,"456 Elm St, Townsville, USA"
+3,1234,Alice,Johnson,1995-02-10,alice.johnson@example.com,+1122334455,"789 Oak St, Villageton, USA"
+4,1234,Emily,Davis,1988-07-20,emily.davis@example.com,+1555123456,"321 Pine St, Hamletown, USA"
+5,1234,Michael,Wilson,1976-12-12,michael.wilson@example.com,+1789456123,"555 Cedar Ave, Villageville, USA"
+6,1234,Sophia,Brown,1994-04-30,sophia.brown@example.com,+1324578963,"987 Maple Blvd, Suburbia, USA"

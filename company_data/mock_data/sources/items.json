@@ -1,0 +1,211 @@
+[
+    {
+        "item_id": "1",
+        "date_added": "2/15/2024",
+        "description": "A luxurious yellow gold ring adorned with sparkling diamonds, exuding timeless elegance and sophistication.",
+        "colors": "yellow, clear",
+        "metals": "yellow gold",
+        "stones": "diamonds",
+        "stones_carat_total_weight": 1.5,
+        "product_id": "1",
+        "image": "1.png"
+    },
+    {
+        "item_id": "2",
+        "date_added": "2/15/2024",
+        "description": "A mesmerizing white gold ring featuring a stunning arrangement of diamonds, symbolizing everlasting beauty and opulence.",
+        "colors": "white, clear",
+        "metals": "white gold",
+        "stones": "diamonds",
+        "stones_carat_total_weight": 1.5,
+        "product_id": "1",
+        "image": "2.png"
+    },
+    {
+        "item_id": "3",
+        "date_added": "2/20/2024",
+        "description": "A radiant pink gold bracelet, exuding regal charm and sophistication.",
+        "colors": "pink",
+        "metals": "pink gold",
+        "stones": "no stones",
+        "stones_carat_total_weight": 0.0,
+        "product_id": "2",
+        "image": "3.png"
+    },
+    {
+        "item_id": "4",
+        "date_added": "2/20/2024",
+        "description": "An exquisite white gold bracelet, epitomizing luxury and grace.",
+        "colors": "white",
+        "metals": "white gold",
+        "stones": "no stones",
+        "stones_carat_total_weight": 0.0,
+        "product_id": "2",
+        "image": "4.png"
+    },
+    {
+        "item_id": "5",
+        "date_added": "2/25/2024",
+        "description": "A majestic yellow gold necklace adorned with glistening diamonds, exuding royal elegance and grandeur.",
+        "colors": "yellow, clear",
+        "metals": "yellow gold",
+        "stones": "diamonds",
+        "stones_carat_total_weight": 3.0,
+        "product_id": "3",
+        "image": "5.png"
+    },
+    {
+        "item_id": "6",
+        "date_added": "2/25/2024",
+        "description": "An opulent white gold necklace featuring a breathtaking arrangement of diamonds, capturing the essence of luxury and sophistication.",
+        "colors": "white, clear",
+        "metals": "white gold",
+        "stones": "diamonds",
+        "stones_carat_total_weight": 3.0,
+        "product_id": "3",
+        "image": "6.png"
+    },
+    {
+        "item_id": "7",
+        "date_added": "3/1/2024",
+        "description": "Luxurious pink gold earrings adorned with sparkling diamonds, radiating opulent glamour and sophistication.",
+        "colors": "pink, clear",
+        "metals": "pink gold",
+        "stones": "diamonds",
+        "stones_carat_total_weight": 2.2,
+        "product_id": "4",
+        "image": "7.png"
+    },
+    {
+        "item_id": "8",
+        "date_added": "3/1/2024",
+        "description": "Elegant white gold earrings featuring a dazzling array of diamonds, exuding timeless beauty and refinement.",
+        "colors": "white, clear",
+        "metals": "white gold",
+        "stones": "diamonds",
+        "stones_carat_total_weight": 2.2,
+        "product_id": "4",
+        "image": "8.png"
+    },
+    {
+        "item_id": "9",
+        "date_added": "2/15/2024",
+        "description": "A timeless yellow gold ring adorned with sparkling diamonds, radiating elegance and grace.",
+        "colors": "yellow, clear",
+        "metals": "yellow gold",
+        "stones": "diamonds",
+        "stones_carat_total_weight": 1.0,
+        "product_id": "5",
+        "image": "9.png"
+    },
+    {
+        "item_id": "10",
+        "date_added": "2/15/2024",
+        "description": "An exquisite pink gold ring featuring a delicate arrangement of diamonds, epitomizing sophistication and charm.",
+        "colors": "pink, clear",
+        "metals": "pink gold",
+        "stones": "diamonds",
+        "stones_carat_total_weight": 1.0,
+        "product_id": "5",
+        "image": "10.png"
+    },
+    {
+        "item_id": "11",
+        "date_added": "03/04/2024",
+        "description": "An elegant white gold necklace adorned with a breathtaking butterfly pendant, symbolizing transformation and beauty.",
+        "colors": "white",
+        "metals": "white gold",
+        "stones": "no stones",
+        "stones_carat_total_weight": 0.0,
+        "product_id": "6",
+        "image": "11.png"
+    },
+    {
+        "item_id": "12",
+        "date_added": "03/04/2024",
+        "description": "An elegant pink gold necklace adorned with a breathtaking butterfly pendant, symbolizing transformation and beauty.",
+        "colors": "pink",
+        "metals": "pink gold",
+        "stones": "no stones",
+        "stones_carat_total_weight": 0.0,
+        "product_id": "6",
+        "image": "12.png"
+    },
+    {
+        "item_id": "13",
+        "date_added": "03/04/2024",
+        "description": "A mesmerizing white gold necklace featuring delicate leaf motifs and sparkling diamond accents, evoking the enchanting beauty of a mystical forest.",
+        "colors": "white",
+        "metals": "white gold",
+        "stones": "diamonds",
+        "stones_carat_total_weight": 0.7,
+        "product_id": "7",
+        "image": "13.png"
+    },
+    {
+        "item_id": "14",
+        "date_added": "03/04/2024",
+        "description": "A mesmerizing yellow gold necklace featuring delicate leaf motifs and sparkling diamond accents, evoking the enchanting beauty of a mystical forest.",
+        "colors": "yellow",
+        "metals": "yellow gold",
+        "stones": "diamonds",
+        "stones_carat_total_weight": 0.7,
+        "product_id": "7",
+        "image": "14.png"
+    },
+    {
+        "item_id": "15",
+        "date_added": "2/15/2024",
+        "description": "An enchanting white gold ring adorned with a heart shaped diamond, symbolizing eternal love and romance.",
+        "colors": "white, clear",
+        "metals": "white gold",
+        "stones": "diamonds",
+        "stones_carat_total_weight": 1.8,
+        "product_id": "8",
+        "image": "15.png"
+    },
+    {
+        "item_id": "16",
+        "date_added": "2/15/2024",
+        "description": "An enchanting pink gold ring adorned with a heart shaped diamond, symbolizing eternal love and romance.",
+        "colors": "pink, clear",
+        "metals": "pink gold",
+        "stones": "diamonds",
+        "stones_carat_total_weight": 1.8,
+        "product_id": "8",
+        "image": "16.png"
+    },
+    {
+        "item_id": "17",
+        "date_added": "2/15/2024",
+        "description": "An enchanting yellow gold ring adorned with a heart shaped diamond, symbolizing eternal love and romance.",
+        "colors": "yellow, clear",
+        "metals": "yellow gold",
+        "stones": "diamonds",
+        "stones_carat_total_weight": 1.8,
+        "product_id": "8",
+        "image": "17.png"
+    },
+    {
+        "item_id": "18",
+        "date_added": "2/25/2024",
+        "description": "An exquisite chain pink gold necklace, capturing the essence of timeless elegance and sophistication.",
+        "colors": "pink",
+        "metals": "pink gold",
+        "stones": "no stones",
+        "stones_carat_total_weight": 0.0,
+        "product_id": "9",
+        "image": "18.png"
+    },
+    {
+        "item_id": "19",
+        "date_added": "2/25/2024",
+        "description": "An exquisite chain yellow gold necklace, capturing the essence of timeless elegance and sophistication.",
+        "colors": "yellow",
+        "metals": "yellow gold",
+        "stones": "no stones",
+        "stones_carat_total_weight": 0.0,
+        "product_id": "9",
+        "image": "19.png"
+    }
+]

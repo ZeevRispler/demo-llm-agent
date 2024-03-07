@@ -76,5 +76,4 @@ def transcribe_file(file_handler):
     """transcribe audio file using openai API"""
     logger.debug("Transcribing file")
     text = openai.Audio.transcribe("whisper-1", file_handler)
-    print(text)
     return ApiResponse(success=True, data=text)

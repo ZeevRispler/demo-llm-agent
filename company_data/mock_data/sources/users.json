@@ -1,0 +1,62 @@
+[
+    {
+        "user_id": "1",
+        "password": "1234",
+        "first_name": "John",
+        "last_name": "Doe",
+        "date_of_birth": "05/15/1990",
+        "email": "john.doe@example.com",
+        "phone": "+1234567890",
+        "address": "123 Main St, Cityville, USA"
+    },
+    {
+        "user_id": "2",
+        "password": "1234",
+        "first_name": "Jane",
+        "last_name": "Smith",
+        "date_of_birth": "09/25/1985",
+        "email": "jane.smith@example.com",
+        "phone": "+1987654321",
+        "address": "456 Elm St, Townsville, USA"
+    },
+    {
+        "user_id": "3",
+        "password": "1234",
+        "first_name": "Alice",
+        "last_name": "Johnson",
+        "date_of_birth": "02/10/1995",
+        "email": "alice.johnson@example.com",
+        "phone": "+1122334455",
+        "address": "789 Oak St, Villageton, USA"
+    },
+    {
+        "user_id": "4",
+        "password": "1234",
+        "first_name": "Emily",
+        "last_name": "Davis",
+        "date_of_birth": "07/20/1988",
+        "email": "emily.davis@example.com",
+        "phone": "+1555123456",
+        "address": "321 Pine St, Hamletown, USA"
+    },
+    {
+        "user_id": "5",
+        "password": "1234",
+        "first_name": "Michael",
+        "last_name": "Wilson",
+        "date_of_birth": "12/12/1976",
+        "email": "michael.wilson@example.com",
+        "phone": "+1789456123",
+        "address": "555 Cedar Ave, Villageville, USA"
+    },
+    {
+        "user_id": "6",
+        "password": "1234",
+        "first_name": "Sophia",
+        "last_name": "Brown",
+        "date_of_birth": "4/30/1994",
+        "email": "sophia.brown@example.com",
+        "phone": "+1324578963",
+        "address": "987 Maple Blvd, Suburbia, USA"
+    }
+]

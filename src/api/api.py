@@ -1,6 +1,6 @@
 from typing import List, Optional, Tuple, Union
 
-from fastapi import Depends, FastAPI, File, Header, Request, UploadFile
+from fastapi import Depends, FastAPI, File, Header, Request, UploadFile, APIRouter
 from pydantic import BaseModel
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -9,7 +9,25 @@ from src.api import chat, collections, users
 from src.config import config, get_vector_db
 from src.schema import IngestItem
 
+
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI()
+
+origins = [
+    "*"  # React app
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Create a router with a prefix
+router = APIRouter(prefix="/api")
 
 # Create a local session factory
 engine = create_engine(config.sql_connection_str, echo=config.verbose)
@@ -46,15 +64,16 @@ async def get_auth_user(
         return AuthInfo(username="yhaviv@gmail.com", token=token)
 
 
-@app.post("/query")
+@router.post("/query")
 async def query(
     item: chat.QueryItem, session=Depends(get_db), auth=Depends(get_auth_user)
 ):
     """This is the query command"""
-    return chat.query(session, item, username=auth.username)
+    x = chat.query(session, item, username=auth.username)
+    return x
 
 
-@app.get("/collections")
+@router.get("/collections")
 async def list_collections(
     owner: str = None,
     metadata: Optional[List[Tuple[str, str]]] = None,
@@ -66,12 +85,12 @@ async def list_collections(
     )
 
 
-@app.get("/collection/{name}")
+@router.get("/collection/{name}")
 async def get_collection(name: str, short: bool = False, session=Depends(get_db)):
     return collections.get_collection(session, name, short=short)
 
 
-@app.post("/collection/{name}")
+@router.post("/collection/{name}")
 async def create_collection(
     request: Request,
     name: str,
@@ -84,12 +103,12 @@ async def create_collection(
     )
 
 
-@app.post("/collection/{name}/ingest")
+@router.post("/collection/{name}/ingest")
 async def ingest(name, item: IngestItem, session=Depends(get_db)):
     return collections.ingest(session, name, item)
 
 
-@app.get("/users")
+@router.get("/users")
 async def list_users(
     email: str = None,
     username: str = None,
@@ -102,12 +121,12 @@ async def list_users(
     )
 
 
-@app.get("/user/{username}")
+@router.get("/user/{username}")
 async def get_user(username: str, session=Depends(get_db)):
     return users.get_user(session, username)
 
 
-@app.post("/user/{username}")
+@router.post("/user/{username}")
 async def create_user(
     request: Request,
     username: str,
@@ -118,13 +137,13 @@ async def create_user(
     return users.create_user(session, username, **data)
 
 
-@app.delete("/user/{username}")
+@router.delete("/user/{username}")
 async def delete_user(username: str, session=Depends(get_db)):
     return users.delete_user(session, username)
 
 
 # add routs for chat sessions, list_sessions, get_session
-@app.get("/sessions")
+@router.get("/sessions")
 async def list_sessions(
     user: str = None,
     last: int = 0,
@@ -137,22 +156,25 @@ async def list_sessions(
     )
 
 
-@app.get("/session/{session_id}")
+@router.get("/session/{session_id}")
 async def get_session(session_id: str, session=Depends(get_db)):
     return chat.get_session(session, session_id)
 
 
-@app.post("/transcribe")
+@router.post("/transcribe")
 async def transcribe_file(file: UploadFile = File(...)):
     file_contents = await file.read()
     file_handler = file.file
     return chat.transcribe_file(file_handler)
 
 
-@app.get("/tst")
+@router.get("/tst")
 async def tst():
     vector = get_vector_db(config)
     results = vector.similarity_search(
         "Can you please provide me with information about the mobile plans?"
     )
     print(results)
+
+# Include the router in the main app
+app.include_router(router)
