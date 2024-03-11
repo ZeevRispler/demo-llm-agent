@@ -30,12 +30,32 @@ CLIENTS = {
 }
 
 # CLIENT_NAME, CLIENT_ID, CLIENT_TYPE = CLIENTS["jon doe"]
-# CLIENT_NAME, CLIENT_ID, CLIENT_TYPE = CLIENTS["jane smith"]
+CLIENT_NAME, CLIENT_ID, CLIENT_TYPE = CLIENTS["jane smith"]
 # CLIENT_NAME, CLIENT_ID, CLIENT_TYPE = CLIENTS["alice johnson"]
 # CLIENT_NAME, CLIENT_ID, CLIENT_TYPE = CLIENTS["emily davis"]
-CLIENT_NAME, CLIENT_ID, CLIENT_TYPE = CLIENTS["michael brown"]
+# CLIENT_NAME, CLIENT_ID, CLIENT_TYPE = CLIENTS["michael brown"]
 # CLIENT_NAME, CLIENT_ID, CLIENT_TYPE = CLIENTS["sophia brown"]
 # CLIENT_NAME, CLIENT_ID, CLIENT_TYPE = "unknown", "unknown", "new"
+
+
+@tool
+def get_jewelry_stock(item_id: str = None, item_name: str = None, metals: str = None) -> str:
+    """
+    A tool to get the stock of a specific jewelry item. returns availability of the item for all sizes.
+    Use this tool if the client is asking about availability of a specific item or wants to purchase a specific item.
+    Needs either item_id or item_name and metals, if not known, try to use the get_jewelry_tool to find the item_id
+    first.
+    """
+    print(f"item_id: {item_id}, item_name: {item_name}, metals: {metals}")
+    # return "The item is in stock in all sizes."
+    engine = get_engine(f"sqlite:///{default_data_path}/../company_data/data/sql.db")
+    item = get_stock(engine=engine, item_id=item_id, item_name=item_name, metals=metals)
+    if item.empty:
+        return "The item requested does not exist in the catalog. Please try again with a different item_id."
+    combined_string = ', '.join([str(r) for r in item.to_dict(orient="records")])
+    return f"The item is in stock in the following sizes: {combined_string}.\n If the size the user wants is not " \
+        f"available, suggest a bigger size if available, or, ask him to give you he's mail and we will contact him " \
+        f"when the item is available."
 
 
 @tool
@@ -62,45 +82,64 @@ def get_client_history_tool(user_id: str = None, new_client: bool = False) -> st
 
 class JewelrySearchInput(BaseModel):
     metals: Optional[list[str]] = Field(description="A list of metals to filter the jewelry by,has to be yellow,"
-                                                    " pink, or white gold or platinum.", default=None)
-    stones: Optional[list[Literal["diamonds", "no stones"]]] = \
-        Field(description="A list of stones to filter the jewelry by.", default=None)
-    colors: Optional[list[Literal["yellow", "clear", "white", "pink"]]] =\
-        Field(description="The color of the stone or metal filter the jewelry by.", default=None)
+                                                    " pink, or white gold.", default=None)
+    stones: Optional[list[str]] = Field(description="A list of stones to filter the jewelry by,"
+                                                    " currently only diamonds or no stones.", default=None)
+    colors: Optional[list[str]] = Field(description="The color of the stone or metal filter the jewelry by,"
+                                                    " currently white, pink, yellow, clear.", default=None)
     min_price: Optional[float] = Field(description="The minimum price of the jewelry.", default=None)
     max_price: Optional[float] = Field(description="The maximum price of the jewelry.", default=None)
-    sort_by: Optional[Literal["highest_price", "lowest_price", "best_reviews", "best_seller", "newest"]] = \
-        Field(description="The column to sort the jewelry by, can be low_price, high_price, most_bought,"
-                          " or review_score.", default="most_bought")
-    collections: Optional[list[str]] = Field(description="The name of the collection to search in.", default=None)
-    gift: Optional[list[str]] = Field(description="The person or occasion the jewelry is for.", default=None)
-    kinds: Optional[list[Literal["rings", "necklaces", "bracelets", "earrings"]]] \
-        = Field(description="The kind of jewelry to search for.", default=None)
+    sort_by: Optional[str] = Field(description="The column to sort the jewelry by, can be low_price, high_price,"
+                                               " most_bought, or review_score.", default="most_bought")
+    kinds: Optional[list[str]] = Field(description="The kind of jewelry to search for, currently "
+                                                   "rings, necklaces, bracelets, earrings.", default=None)
+
+
+def validate_param(params: list[str], options: list[str]):
+    """
+    Validate every parameter in the params list, if the parameter is not in the options, remove it,
+    if all params in list removed, return None.
+    """
+    if not params:
+        return None
+    if [p for p in params if p in options]:
+        return [p for p in params if p in options]
+    return None
 
 
 @tool("jewelry-search-tool", args_schema=JewelrySearchInput)
-def get_jewelry_tool(metals: list[str] = None, stones: Optional[list[Literal["diamonds", "no stones"]]] = None,
-                     colors: list[Optional[list[Literal["yellow", "clear", "white", "pink"]]]] = None,
-                     min_price: float = None, max_price: float = None, sort_by: Literal["highest_price", "lowest_price",
-        "best_reviews", "best_seller", "newest"] = "best_seller",
-                     collections: list[str] = None, gift: list[str] = None,
-                     kinds: list[Literal["rings", "necklaces", "bracelets", "earrings"]] = None) -> str:
+def get_jewelry_tool(metals: list[str] = None, stones: Optional[list[str]] = None,
+                     colors: list[str] = None, min_price: float = None, max_price: float = None,
+                     sort_by: str = "best_seller",
+                     kinds: list[str] = None) -> str:
     """
-    A tool to get most relevant jewelry items from the database according to the user's query.
+    A tool to get most relevant jewelry items from the catalog database according to the user's query.
+    All literal values must match option, if the user gave a value that is not in the options, replace it with None.
+    If the user asks about availability of a specific item, use the get_jewelry_stock tool.
     """
+    # Double-check the parameters the agent sent
+    metals = validate_param(params=metals, options=["yellow gold", "pink gold", "white gold"])
+    stones = validate_param(params=stones, options=["diamonds", "no stones"])
+    colors = validate_param(params=colors, options=["yellow", "clear", "white", "pink"])
+    kinds = validate_param(params=kinds, options=["rings", "necklaces", "bracelets", "earrings"])
+    sort_by = sort_by if sort_by in ["low_price", "high_price", "most_bought", "review_score"] else "most_bought"
+
+    # Get the jewelry items from the database
     engine = get_engine(f"sqlite:///{default_data_path}/../company_data/data/sql.db")
     jewelry_df = get_items(engine=engine, metals=metals, stones=stones, colors=colors, sort_by=sort_by, kinds=kinds,
                            min_price=min_price, max_price=max_price)
     if jewelry_df.empty:
         return "We don't have any jewelry that matches your query. try to change the parameters."
     n = min(5, len(jewelry_df))
+    print(jewelry_df.head(n))
     top_n_df: pd.DataFrame = jewelry_df.iloc[:n][["description", "price", "item_id", "image"]]
     combined_string = ', '.join([str(r) for r in top_n_df.to_dict(orient="records")])
     # Print the resulting string
     print(combined_string)
 
-    jewelry = "We have the following jewelry items in stock: " + combined_string + "./n Look at the client's history " \
-        "and find the most relevant jewelry for him, max 3 items. always show the customer the price." \
+    jewelry = "We have the following jewelry items in our catalog: " + combined_string + "./n " \
+        "Look at the client's history and find the most relevant jewelry for him, max 3 items." \
+        " always show the customer the price." \
         " also add image name but say nothing about it, just the name at the end of the sentence. " \
         "example: 'jewelry description, price, explanation of choice. image.png'."
     return jewelry
@@ -146,12 +185,13 @@ def mark_down_response(response):
 class Agent(ChainRunner):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.llm = ChatOpenAI(model="gpt-4")
+        self.llm = ChatOpenAI(model="gpt-3.5-turbo")
         self.agent = None
 
     def _get_agent(self):
         if self.agent:
             return self.agent
+        # Create the RAG tools
         policy_retriever = init_db("rag_data/jewelry_policies.txt")
         policy_retriever_tool = create_retriever_tool(
             policy_retriever,
@@ -165,7 +205,14 @@ class Agent(ChainRunner):
             "Query a retriever to get information about recommendations regarding jewelry shopping and matching"
             " gifted jewelry to the right person or event.",
         )
-        tools = [get_jewelry_tool, policy_retriever_tool, recommendation_retriever_tool, get_client_history_tool]
+        size_retriever = init_db("rag_data/jewelry_size_help.txt")
+        size_retriever_tool = create_retriever_tool(
+            size_retriever,
+            "jewelry-size-retriever",
+            "Query a retriever to get information regarding jewelry size, in order to help customer choose.",
+        )
+        tools = [get_jewelry_tool, get_client_history_tool, recommendation_retriever_tool, policy_retriever_tool,
+                 size_retriever_tool, get_jewelry_stock]
         llm_with_tools = self.llm.bind_tools(tools)
         prompt = ChatPromptTemplate.from_messages(
             [
@@ -195,6 +242,7 @@ class Agent(ChainRunner):
         self.agent = self._get_agent()
         response = list(self.agent.stream({"input": event.query}))
         answer = response[-1]["messages"][-1].content
+        print(response)
         answer = mark_down_response(answer)
         return {"answer": answer, "sources": ""}
 
