@@ -17,7 +17,7 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.tools.retriever import create_retriever_tool
 from langchain.pydantic_v1 import BaseModel, Field
-from company_data.database.sql_db import get_items, get_engine, get_user_items_purchases_history
+from company_data.database.sql_db import get_items, get_engine, get_user_items_purchases_history, get_item_stocks
 from src.config import default_data_path
 import re
 CLIENTS = {
@@ -39,19 +39,20 @@ CLIENT_NAME, CLIENT_ID, CLIENT_TYPE = CLIENTS["jane smith"]
 
 
 @tool
-def get_jewelry_stock(item_id: str = None, item_name: str = None, metals: str = None) -> str:
+def get_jewelry_stock(item_id: str = None, product_name: str = None, metals: str = None) -> str:
     """
     A tool to get the stock of a specific jewelry item. returns availability of the item for all sizes.
     Use this tool if the client is asking about availability of a specific item or wants to purchase a specific item.
     Needs either item_id or item_name and metals, if not known, try to use the get_jewelry_tool to find the item_id
     first.
     """
-    print(f"item_id: {item_id}, item_name: {item_name}, metals: {metals}")
+    print(f"item_id: {item_id}, item_name: {product_name}, metals: {metals}")
     # return "The item is in stock in all sizes."
     engine = get_engine(f"sqlite:///{default_data_path}/../company_data/data/sql.db")
-    item = get_stock(engine=engine, item_id=item_id, item_name=item_name, metals=metals)
+    item = get_item_stocks(engine=engine, item_id=item_id, product_name=product_name, metal=metals)
     if item.empty:
-        return "The item requested does not exist in the catalog. Please try again with a different item_id."
+        return "The item requested does not exist in the catalog. Please try again with a item_id, if you don't" \
+               " have one get it from the get_jewelry tool."
     combined_string = ', '.join([str(r) for r in item.to_dict(orient="records")])
     return f"The item is in stock in the following sizes: {combined_string}.\n If the size the user wants is not " \
         f"available, suggest a bigger size if available, or, ask him to give you he's mail and we will contact him " \
@@ -185,7 +186,7 @@ def mark_down_response(response):
 class Agent(ChainRunner):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.llm = ChatOpenAI(model="gpt-3.5-turbo")
+        self.llm = ChatOpenAI(model="gpt-4")
         self.agent = None
 
     def _get_agent(self):
