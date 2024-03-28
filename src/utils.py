@@ -12,6 +12,8 @@ def sources_to_md(sources):
     """Convert a list of sources to a Markdown string."""
     if not sources:
         return ""
+    if isinstance(sources, str):
+        return sources
     sources = {
         source.metadata["source"]: get_title(source.metadata) for source in sources
     }
