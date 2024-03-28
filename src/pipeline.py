@@ -2,7 +2,7 @@ from src.chains.base import AppPipeline, HistorySaver, SessionLoader
 from src.chains.refine import RefineQuery
 from src.chains.retrieval import MultiRetriever
 from src.config import AppConfig, logger
-from src.chains.jewelry_agent import Agent
+from src.chains.fashion_agent import Agent
 
 pipe_config = [
     SessionLoader(),

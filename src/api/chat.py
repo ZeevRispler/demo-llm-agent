@@ -1,6 +1,6 @@
 from typing import List, Optional, Tuple
 
-import openai
+# import openai
 import sqlalchemy
 from pydantic import BaseModel
 
@@ -72,8 +72,8 @@ def get_session(session: sqlalchemy.orm.Session, session_id: str):
         return ApiResponse(success=False, error="Session not found")
 
 
-def transcribe_file(file_handler):
-    """transcribe audio file using openai API"""
-    logger.debug("Transcribing file")
-    text = openai.Audio.transcribe("whisper-1", file_handler)
-    return ApiResponse(success=True, data=text)
+# def transcribe_file(file_handler):
+#     """transcribe audio file using openai API"""
+#     logger.debug("Transcribing file")
+#     text = openai.Audio.transcribe("whisper-1", file_handler)
+#     return ApiResponse(success=True, data=text)

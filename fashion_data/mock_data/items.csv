@@ -1,0 +1,11 @@
+image,description,kind,colors,fit,styles,material,item_id,date_added,name,price
+formal_shirt_0.jpg,"Classic light pink button-up shirt, designed for versatile style and comfortable wear. Made of high-quality, breathable fabric, it features a neat pointed collar, adjustable cuffs, and a handy chest pocket for functionality. ",shirt,"pink, light pink" ,"elegant, formal, classy",cotton,6223cb21ff5348adb649c38b41d64d86,2024-01-31,Formal Shirt 0,100
+formal_shirt_1.jpg,"Sleek light blue shirt, perfect for professional or formal occasions. Crafted from a smooth, high-quality fabric, classic point collar, button front, and adjustable button cuffs.",shirt,"blue, light blue","elegant, formal, classy",polyester,c14abebe2e9445938962da73a66be4b4,2024-01-11,Formal Shirt 1,80
+formal_shirt_2.jpg,sleek light blue button shirt with a point collar and small dots,shirt,"blue, light blue",casual,"elegant, formal, classy",polyester,b9a4aa4e7d5e44ae8426bdf2d5fd6e86,2024-03-12,Formal Shirt 2,90
+formal_shirt_3.jpg,"classic men's button-down front, and a sharp pointed collar shirt in sleek blue color",shirt,blue,slim,"elegant, formal, classy",cotton,4e60ad3331bb45308fa83140b4a49689,2024-03-17,Formal Shirt 3,90
+formal_shirt_4.jpg,"Classic striped button-up shirt in crisp white. classic collar, regular fit.",shirt,white,slim,"elegant, formal, classy",cotton,a94f45218c5f4fceb13ab1208bd9607e,2024-03-07,Formal Shirt 4,100
+formal_shirt_5.jpg,Classic white shirt with a sharp point collar and long sleeves with button cuffs. ,shirt,white,slim,"elegant, formal, classy",cotton,33e47e6f28864e268bc3072e4e3665f9,2024-01-15,Formal Shirt 5,90
+shoe_0.jpg,"Classic low-top sneakers, featuring a white canvas and durable rubber sole provide all-day comfort and support. Perfect for everyday wear",shoes,white,low top,"daily, party",canvas,a1bc28a8bcee47e38dc1d77926c6cf93,2024-02-06,Shoe 0,140
+shoe_1.jpg,Leather formal and business attire men's lace-up shoes in rich brown,shoes,"brown, tan",low top,"elegant, daily, party",leather,3a656960b90843b797b4f0e28f3053dd,2024-03-18,Shoe 5,140
+shoe_2.jpg,formal Leather men's shoes in tan brown,shoes,"brown, tan",low top,"elegant, daily, party",leather,3a656960b90843b797b4f0e28f3053dd,2024-03-18,Shoe 5,140
+

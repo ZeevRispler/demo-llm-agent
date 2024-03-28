@@ -1,0 +1,90 @@
+filename,caption,kind,colors,fit,style,material
+flip_flop_0.jpeg,"Sleek black flip-flops with durable straps, textured footbed for added grip",flip-flop,black,casual,"daily, sunny",rubber
+flip_flop_1.jpeg,"Stylish flip-flops, featuring durable black rubber soles for a firm grip and sleek orange leather straps for a touch of elegance. ",flip-flop,"black, orange",casual,"daily, sunny","rubber, leather"
+flip_flop_2.jpeg,"Classic Beach Flip-Flops featuring durable rubber soles for long-lasting wear and comfortable, sleek black straps for a secure fit. ",flip-flop,"brown, black",casual,"daily, sunny","rubber, leather"
+formal_shirt_0.jpeg,"Classic olive green button-up shirt, designed for versatile style and comfortable wear. Made of high-quality, breathable fabric, it features a neat pointed collar, adjustable cuffs, and a handy chest pocket for functionality. ",shirt,olive green,casual,"elegant, formal",cotton
+formal_shirt_1.jpeg,"Sleek charcoal gray shirt, perfect for professional or formal occasions. Crafted from a smooth, high-quality fabric, classic point collar, button front, and adjustable button cuffs.",shirt,gray,casual,"elegant, formal",polyester
+formal_shirt_2.jpeg,sleek charcoal gray button shirt with a point collar,shirt,gray,casual,"elegant, formal",polyester
+formal_shirt_3.jpeg,"classic men's button-down front, and a sharp pointed collar shirt in sleek charcoal gray color",shirt,gray,slim,"elegant, formal",cotton
+formal_shirt_4.jpeg,"Classic striped button-up shirt with taupe and white vertical stripes. classic collar, regular fit.",shirt,"taupe, white",slim,daily,cotton
+formal_shirt_5.jpeg,Classic striped shirt with a sharp point collar and long sleeves with button cuffs. ,shirt,"gray, white",slim,daily,cotton
+jacket_0.jpeg,"Classic overcoat for men with a structured collar, three-button front closure, and deep, practical front pockets.",jacket,dark green,casual,"daily, elegant",cotton
+jacket_1.jpeg,"Classic Denim Jacket with button-front closure, flap chest pockets, and classic collar.",jacket,blue,casual,daily,jeans
+jacket_2.jpeg,Stylish jacket with a classic design with a prominent letter 'D' patch and side pockets for added functionality.,jacket,brown,casual,daily,cotton
+jacket_3.jpeg,"Stylish jacket in camel brown, contrasting striped cuffs and collar. Snap button closure, bold ""6"" emblem on chest. ",jacket,camel brown,casual,daily,cotton
+jacket_4.jpeg,"Stylish jacket, with front button closure and side pockets. with a navy body, contrasting tan sleeves, and striped ribbed detailing at the collar, cuffs, and hem.",jacket,"navy blue, camel brown",casual,daily,"cotton, leather"
+jacket_5.jpeg,"Buttoned olive green jacket with tan faux leather sleeves, and slant pockets",jacket,"olive green, camel brown",casual,daily,"cotton, leather"
+jacket_6.jpeg,"Stylish varsity jacket, featuring a durable navy blue body and contrasting tan sleeves. ",jacket,"navy blue, brown",casual,daily,"cotton, leather"
+jacket_7.jpeg, Classic men's coat in camel brown color with dark brown buttons and button-detailing at the cuffs.,jacket,camel brown,casual,"work wear, elegant",cotton
+jeans_0.jpeg,Denim jeans with a slim fit and bold ripped detailing.,long pants,dark blue,skinny,daily,jeans
+jeans_1.jpeg,Loose fit distressed denim jeans,long pants,blue,loose,daily,jeans
+jeans_2.jpeg,Classic straight-leg blue denim.,long pants,blue,straight,daily,jeans
+jeans_3.jpeg,Classic blue denim jeans.,long pants,blue,straight,daily,jeans
+jeans_4.jpeg,Blue jeans with a trendy faded wash and tears.,long pants,blue,loose,daily,jeans
+jeans_5.jpeg,Classic Blue Denim Jeans with straight-leg fir feature a vintage blue wash.,long pants,blue,straight,daily,jeans
+jeans_6.jpeg,Classic mid-rise relaxed fit denim jeans in faded washed Blue ,long pants,blue,loose,daily,jeans
+long_pants_1.jpeg,Stylish gray denim jeans with a slim-fit design.,long pants,gray,skinny,daily,jeans
+long_pants_2.jpeg,"Classic mid-rise, slim-fit gray wash Denim Jeans",long pants,gray,straight,daily,jeans
+long_pants_3.jpeg,Straight-leg trousers. ,long pants,"green, grey",straight,"work wear, elegant",cotton
+long_pants_4.jpeg,"Classic taupe tailored trousers, high-waist, tapered fit",long pants,"taupe, brown",loose,daily,polyester
+long_pants_5.jpeg,"Classic trousers, tailored for a comfortable fit and made from high-quality, durable fabric with slanted side pockets, and a clean, straight-leg cut. ",long pants,camel brown,straight,"work wear, elegant",polyester
+long_pants_6.jpeg,Classic Olive Green pants feature a straight-leg design.,long pants,green,skinny,"work wear, elegant",cotton
+long_pants_7.jpeg,"Classic blue pants, tailored for a modern slim fit, they feature a mid-rise fit and are made from a durable cotton blend.",long pants,blue,skinny,"work wear, elegant",cotton
+long_pants_8.jpeg,"straight-leg cut, relaxed fit, made from cotton.",long pants,gray,skinny,"work wear, elegant",cotton
+long_pants_9.jpeg,Loose long pants featuring multiple pockets for convenient storage and adjustable drawstrings at the ankles for a customizable fit. ,long pants,olive green,loose,daily,polyester
+polo_shirt_0.jpeg,"Classic Green Polo Shirt, crafted with a soft, breathable cotton blend for ultimate comfort. ",polo shirt,green,casual,"daily, work wear",cotton
+polo_shirt_1.jpeg,"Classic style polo shirt, designed for versatile wear. Crafted with high-quality, breathable fabric. ",polo shirt,green,casual,"daily, work wear",cotton
+polo_shirt_2.jpeg,cotton blend green polo shirt with a tailoredwhite stripes collar,polo shirt,green,casual,"daily, work wear",cotton
+polo_shirt_3.jpeg,"Classic comfortable and stylish green polo shirt, featuring a contrasting beige collar and sleeve trims. ",polo shirt,green,casual,"daily, work wear",cotton
+polo_shirt_4.jpeg,"classic short sleeved cotton blend striped polo shirt with a contrasting collar, in a tan and blue color palette",polo shirt,"green, Beige",casual,"daily, work wear",cotton
+polo_shirt_5.jpeg,classic cotton blend striped polo shirt in green and yellow stripe pattern and a ribbed collar,polo shirt,"green, yellow",casual,"daily, work wear",cotton
+polo_shirt_6.jpeg,"Classic striped polo shirt, designed for both comfort and style with bold navy and white stripes.",polo shirt,"blue, white",casual,"daily, work wear",cotton
+polo_shirt_7.jpeg,"Classic polka dot short-sleeve shirt, perfect for any casual occasion. ",polo shirt,"blue, white",casual,"daily, work wear",cotton
+shirt_0.jpeg,Stylish gray t-shirt features a unique graphic print.,t-shirt,gray,casual,daily,cotton
+shirt_1.jpeg,gray t-shirt with white polka dots,t-shirt,"gray, white",oversized,daily,cotton
+shirt_10.jpeg,Stylish white t-shirt with black details,t-shirt,white,casual,daily,cotton
+shirt_11.jpeg,"Stylish and comfortable white cotton t-shirt, featuring unique abstract black line art.",t-shirt,white,casual,daily,cotton
+shirt_12.jpeg,"Classic fit olive green T-shirt, soft breathable fabric",t-shirt,olive green,casual,daily,cotton
+shirt_13.jpeg,"Classic Yellow Crewneck T-Shirt, regular fit",t-shirt,yellow,oversized,"daily, party",cotton
+shirt_14.jpeg,"Tropical short-sleeve shirt in coral red bold black palm tree print, it features an oversized fit, short sleeves, and a pointed collar",shirt,"coral red, black",oversized,"daily, party, pool",cotton
+shirt_15.jpeg,"White t-shirt with black vertical line print, casual fit, classic round neckline",t-shirt,white,casual,"daily, party",cotton
+shirt_16.jpeg,"Red abstract-print t-shirt, features a relaxed fit and a crew neckline",t-shirt,"red, black",casual,"daily, party",cotton
+shirt_17.jpeg,"Red t-shirt featuring a black abstract pattern. Featuring short-sleevs, bold design pairs easily with jeans or shorts for a standout summer look.",t-shirt,"red, black",slim,"daily, party",cotton
+shirt_18.jpeg,"Grey and yellow short-sleeved t-shirt with distressed rugged, industrial aesthetic pattern. ",t-shirt,"gray, yellow",slim,"daily, party, grunge",cotton
+shirt_19.jpeg,"Green and yellow striped t-shirt features for everyday wear. Perfect for pairing with jeans or shorts, this tee is a versatile addition to any wardrobe.",t-shirt,"green, yellow",casual,daily,cotton
+shirt_20.jpeg,Striped Crew Neck T-Shirt for everyday wear and offers an oversized look that's easy to pair with jeans or shorts.,t-shirt,"white, black",oversized,"daily, party",cotton
+shirt_21.jpeg,"Green and orange striped short-sleeve T-shirt, features a classic crew neck. Perfect for a casual day out or layering under a jacket.",t-shirt,"olive green, orange",casual,daily,cotton
+shirt_3.jpeg,Olive green t-shirt featuring an abstract design green and yellow tones adding a touch of artistic for your everyday wardrobe.,t-shirt,olive green,casual,daily,cotton
+shirt_5.jpeg,Camel brown t-shirt featuring a unique graphic black print. Featuring a slim fit and is perfect match for jeans or shorts.,t-shirt,"camel brown, yellow",slim,daily,cotton
+shirt_8.jpeg,Gray crew-neck T-shirt in an oversized fit,t-shirt,gray,oversized,party,linen
+shirt_9.jpeg,White t-shirt features a black line art design for everyday wear with a slim fit.,t-shirt,"white, black",slim,"daily, party",linen
+shoe_0.jpeg,"Classic low-top sneakers, featuring a white canvas and durable rubber sole provide all-day comfort and support. Perfect for everyday wear",shoes,white,low top,"daily, party",canvas
+shoe_1.jpeg,Black sneakers featuring a durable upper of cotton and leather,shoes,black,low top,"daily, party, formal","leather, cotton"
+shoe_10.jpeg,"classic white leather sneakers with a sleek, low-top design",shoes,white,low top,"daily, elegant",leather
+shoe_2.jpeg,"Navy blue leather sneaker, featuring a contrasting off-white sole and brown laces for your everyday look.",shoes,navy blue,low top,"daily, party",leather
+shoe_3.jpeg,Black and orange sneakers with suede leather finish.,shoes,"black, orange",low top,"daily, party",suede leather
+shoe_4.jpeg,"High-top lace-up sneakers, with green suede upper and a contrasting brown rubber sole and a sleek black leather heel accent",shoes,dark green,high top,"daily, party",suede leather
+shoe_5.jpeg,Leather formal and business attire men's lace-up shoes in rich brown,shoes,"brown, tan",low top,"elegant, daily, party",leather
+shoe_6.jpeg,"Classic men's leather dress boots, featuring a polished tan finish",shoes,"brown, tan",high top,elegant,leather
+shoe_7.jpeg,"Black athletic shoes, perfect for both casual wear and sports.",shoes,black,low top,"daily, sport","leather, cotton"
+shoe_8.jpeg,Low-top black leather sneakers,shoes,black,low top,"elegant, daily",leather
+shoe_9.jpeg,Classic Black Low-Top Suede Sneakers with a rubber sole,shoes,black,low top,"daily, party",leather
+short_pants_0.jpeg,"Khaki brown shorts, comfortable fit, smooth front zipper closure, side pockets, belt loops",short pants,khaki brown,straight,"daily, party",cotton
+short_pants_3.jpeg,"Dark khaki brown shorts in a comfortable straight fit, featuring side pockets and belt loops",short pants,khaki brown,straight,"daily, party",cotton
+short_pants_4.jpeg,Short blue jeans in skinny fit with pockets ,short pants,blue,skinny,"dailt, party",jeans
+short_pants_5.jpeg,"Denim jeans shorts, in a loose fir, perfect for a casual summer day. ",short pants,blue,loose,"daily, party, pool",jeans
+short_pants_6.jpeg,classic mid-rise fit denim shorts in blue wash,short pants,blue,loose,"daily, party",jeans
+sweater_0.jpeg,"Cozy crewneck sweater features a rustic pattern in earthy tones of blue, red and brown.",sweater,"navy blue, dark brown",casual,"daily, family",cotton
+sweater_1.jpeg,"Color block sweater featuring brown, yellow, green and blue colors",sweater,"blue, green, yellow, orange, tan brown",slim,"daily, party",cotton
+sweater_3.jpeg,"Crew-neck blue sweater from a soft, high-quality cotton comfortable everyday wear.",sweater,blue,slim,"daily, elegant",cotton
+sweater_5.jpeg,"Striped Sweater, in earth-toned color palette with horizontal stripes.",sweater,"brown, red, blue",casual,"daily, elegant",cotton
+sweatshirt_0.jpeg,"Stay cozy and stylish with our classic snug fit, cotton blend brown hoodie with a pouch",sweatshirt,brown,casual,daily,cotton
+sweatshirt_1.jpeg,"Mustard yellow hoodie with ribbed cuffs, and a spacious kangaroo pocket",sweatshirt,yellow,casual,daily,cotton
+sweatshirt_2.jpeg,"Pink hoodie, crafted from soft, breathable fabric for everyday wear. ",sweatshirt,pink,casual,daily,cotton
+sweatshirt_3.jpeg,"Tan-colored hooded sweatshirt, featuring a vibrant, abstract paint stroke design for a touch of artistic flair.",sweatshirt,brown,loose,daily,cotton
+sweatshirt_4.jpeg,"Green pullover hoodie, crafted from a comfortable cotton-blend fabric. It features a classic drawstring hood and kangaroo front pocket.",sweatshirt,green,casual,daily,cotton
+swimsuit_0.jpeg,"black swim shorts, sleek design, adjustable drawstring waist, mid-thigh length",swimsuit,black,casual,sunny,linen
+tanktop_0.jpeg,"Aqua Blue Tank Top, sleeveless style, soft cotton blend",tanktop,light blue,slim,"sunny, daily, sport",cotton
+tanktop_1.jpeg,"Classic tank top in rich burgundy hue, soft, breathable fabric, comfortable fit and a scoop neckline",tanktop,red,slim,"sunny, daily, sport",cotton
+tanktop_2.jpeg,"Stylish with this vibrant red tank top, designed for versatile wear. ",tanktop,red,slim,"sunny, daily, sport",cotton
+tanktop_3.jpeg,Olive green racerback tank top combines style with comfort. ,tanktop,olive green,slim,"sunny, daily, sport",cotton
