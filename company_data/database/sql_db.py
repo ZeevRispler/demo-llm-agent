@@ -45,11 +45,9 @@ from sqlalchemy.orm import (
     sessionmaker,
 )
 
-
 ID_LENGTH = 32
 
 Base = declarative_base()
-
 
 #: Association table between stocks and purchases for many-to-many relationship.
 stock_to_purchase = Table(
@@ -300,16 +298,16 @@ def drop_tables(engine: Engine):
 
 
 def get_items(
-    engine: Engine,
-    kinds: List[Literal["rings", "necklaces", "bracelets", "earrings"]] = None,
-    colors: List[str] = None,
-    metals: List[str] = None,
-    stones: List[str] = None,
-    collections: List[str] = None,
-    gifts: List[str] = None,
-    min_price: float = None,
-    max_price: float = None,
-    sort_by: Literal["highest_price", "lowest_price", "best_reviews", "best_seller", "newest"] = None,
+        engine: Engine,
+        kinds: List[Literal["rings", "necklaces", "bracelets", "earrings"]] = None,
+        colors: List[str] = None,
+        metals: List[str] = None,
+        stones: List[str] = None,
+        collections: List[str] = None,
+        gifts: List[str] = None,
+        min_price: float = None,
+        max_price: float = None,
+        sort_by: Literal["highest_price", "lowest_price", "best_reviews", "best_seller", "newest"] = None,
 ) -> pd.DataFrame:
     """
     Get the items from the database.
@@ -349,7 +347,7 @@ def get_items(
         )
 
         query = (
-            select(Item, items_average_price_query.c.price).
+            select(Product.name, Product.kind, Item, items_average_price_query.c.price).
             join(Item.product).
             join(items_average_price_query).
             join(items_total_purchases_query, isouter=True).
@@ -408,7 +406,7 @@ def get_items(
 
 
 def get_user_items_purchases_history(
-    engine: Engine, user_id: str, last_n_purchases: int = 5
+        engine: Engine, user_id: str, last_n_purchases: int = 5
 ) -> pd.DataFrame:
     """
     Get the user's items purchase history.
@@ -430,3 +428,30 @@ def get_user_items_purchases_history(
         purchases = conn.execute(query).all()
 
     return pd.DataFrame(purchases)
+
+
+def get_item_stocks(engine: Engine, item_id: str = None, product_name: str = None, metal: str = None) -> pd.DataFrame:
+    """
+    Get the item's stocks. The item can be retrieved by its unique identifier or by its product name and metal.
+
+    :param engine:       A SQL database engine.
+    :param item_id:      The item's unique identifier.
+    :param product_name: The product's name.
+    :param metal:        The metal of the item.
+
+    :return: A DataFrame of the item's stocks.
+    """
+    with engine.connect() as conn:
+        if item_id:
+            query = select(Stock).where(Stock.item_id == item_id)
+        else:
+            assert product_name and metal, "product_name and metal must be provided together"
+
+            query = (
+                select(Stock).join(Item).join(Product).
+                where(Product.name == product_name).
+                where(Item.metals.like(f"%{metal}%"))
+            )
+        stocks = conn.execute(query).all()
+
+    return pd.DataFrame(stocks)
