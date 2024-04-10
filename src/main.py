@@ -5,20 +5,14 @@ import click
 import yaml
 from tabulate import tabulate
 
-from src.api import chat, collections, users
-from src.data.sqldb import (
-    DocumentCollections,
-    Users,
-    create_tables,
-    drop_tables,
-    get_db_session,
-)
-import pandas as pd
-from .config import config
-from .doc_loader import get_data_loader, get_loader_obj
-from .pipeline import initialize_pipeline
-from .schema import PipelineEvent
-from .utils import sources_to_text
+import src.controller.model as model
+from src.app.config import config
+from src.app.data.doc_loader import get_data_loader, get_loader_obj
+from src.app.pipelines import app_server
+from src.controller.sqlclient import client
+
+from .pipeline import pipelines
+from src.app.utils import sources_to_text
 
 
 @click.group()
@@ -30,45 +24,30 @@ def cli():
 @click.command()
 def initdb():
     """Initialize the database (delete old tables)"""
-    click.echo(f"Running Init DB")
-    drop_tables()
-    create_tables()
-    session = get_db_session()
+    click.echo("Running Init DB")
+    client.create_tables(True)
+    session = client.get_db_session()
     # create a guest user, and the defualt document collection
-    Users.create(session, "guest", email="guest@any.com", full_name="Guest User")
-    DocumentCollections.create(
-        session,
-        "default",
-        description="Default Collection",
-        owner_name="guest",
-        db_category="vector",
+    client.create_user(
+        model.User(name="guest", email="guest@any.com", full_name="Guest User"),
+        session=session,
+    )
+    client.create_collection(
+        model.DocCollection(
+            name="default",
+            description="Default Collection",
+            owner_name="guest",
+            category="vector",
+        ),
+        session=session,
     )
     session.close()
-
-@click.command()
-def init_bankdb():
-    """Initialize the bank database"""
-    from src.data.bank_db import create_tables, insert_accounts, get_accounts, update_accounts
-    click.echo(f"Running Init Bank DB")
-    create_tables()
-    accounts = pd.DataFrame(
-        {
-            "account_name": ["Alice", "Bob", "jacob"],
-            "account_id": ["1", "2", "3"],
-            "password": [1234, 1111, 2222],
-            "balance": [1000, 1200, 1500],
-        }
-    )
-    if get_accounts().empty:
-        insert_accounts(accounts)
-    else:
-        update_accounts(data=accounts, data_key="account_id", table_key="account_id")
 
 
 @click.command("config")
 def print_config():
     """Print the config as a yaml file"""
-    click.echo(f"Running Config")
+    click.echo("Running Config")
     click.echo(yaml.dump(config.dict()))
 
 
@@ -85,7 +64,6 @@ def print_config():
 )
 def ingest(path, loader, metadata, version, collection, from_file):
     """Ingest documents into the vector database"""
-    create_tables()
     data_loader = get_data_loader(config, collection_name=collection)
     if from_file:
         with open(path, "r") as fp:
@@ -117,25 +95,28 @@ def ingest(path, loader, metadata, version, collection, from_file):
 @click.option("-u", "--user", type=str, help="Username")
 @click.option("-v", "--verbose", is_flag=True, help="Verbose mode")
 @click.option("-s", "--session", type=str, help="Session ID")
-def query(question, filter, collection, user, verbose, session):
+@click.option(
+    "-n", "--pipeline-name", type=str, default="default", help="Pipeline name"
+)
+def query(question, filter, collection, user, verbose, session, pipeline_name):
     """Run a chat quary on the vector database collection"""
     click.echo(f"Running Query for: {question}")
 
     search_args = {"filter": dict(filter)} if filter else {}
-    pipeline = initialize_pipeline(config, verbose=verbose)
-    result = pipeline.run(
-        PipelineEvent(
-            username=user,
-            session_id=session,
-            query=question,
-            collection_name=collection,
-        )
-    )
+    app_server.verbose = verbose or config.verbose
+    app_server.add_pipelines(pipelines)
+
+    event = {
+        "username": user,
+        "session_id": session,
+        "query": question,
+        "collection_name": collection,
+    }
+    result = app_server.run_pipeline(pipeline_name, event)
     click.echo(result["answer"])
     click.echo(sources_to_text(result["sources"]))
 
 
-# create a child click group for listing database tables in sqldb.py (users, document collections), with two commands: 1. list users, 2. list collections
 @click.group()
 def list():
     """List the different objects in the database (by category)"""
@@ -155,11 +136,9 @@ def list_users(user, email):
     """List users"""
     click.echo("Running List Users")
 
-    session = get_db_session()
-    data = users.list_users(session, email, user, short=True).with_raise()
+    data = client.list_users(email, user, output_mode="short").with_raise()
     table = format_table_results(data.data)
     click.echo(table)
-    session.close()
 
 
 # add a command to list document collections, similar to the list users command
@@ -172,42 +151,44 @@ def list_collections(owner, metadata):
     """List document collections"""
     click.echo("Running List Collections")
 
-    session = get_db_session()
-    data = collections.list_collections(
-        session, owner, metadata, short=True
-    ).with_raise()
+    data = client.list_collections(owner, metadata, output_mode="short").with_raise()
     table = format_table_results(data.data)
     click.echo(table)
-    session.close()
 
 
-# add a command for creating or updating a collection, using the collections.create_collection function, and accept all the same arguments as click options
 @click.command("collection")
 @click.argument("name", type=str)
 @click.option("-o", "--owner", type=str, help="owner name")
 @click.option("-d", "--description", type=str, help="collection description")
 @click.option("-c", "--category", type=str, help="collection category")
-@click.option("-m", "--metadata", multiple=True, default=[], help="metadata filter")
-def update_collection(name, owner, description, category, metadata):
+@click.option(
+    "-l", "--labels", multiple=True, default=[], help="metadata labels filter"
+)
+def update_collection(name, owner, description, category, labels):
     """Create or update a document collection"""
     click.echo("Running Create or Update Collection")
-    metadata = fill_params(metadata)
+    labels = fill_params(labels)
 
-    session = get_db_session()
+    session = client.get_db_session()
     # check if the collection exists, if it does, update it, otherwise create it
-    collection_exists = collections.get_collection(session, name).success
+    collection_exists = client.get_collection(name, session=session).success
     if collection_exists:
-        collections.update_collection(
-            session, name, description, db_category=category, meta=metadata
+        client.update_collection(
+            session,
+            model.DocCollection(
+                name=name, description=description, category=category, labels=labels
+            ),
         ).with_raise()
     else:
-        collections.create_collection(
+        client.create_collection(
             session,
-            name,
-            description,
-            owner_name=owner,
-            db_category=category,
-            meta=metadata,
+            model.DocCollection(
+                name=name,
+                description=description,
+                owner_name=owner,
+                category=category,
+                labels=labels,
+            ),
         ).with_raise()
 
 
@@ -220,14 +201,12 @@ def list_sessions(user, last, created):
     """List chat sessions"""
     click.echo("Running List Sessions")
 
-    session = get_db_session()
-    data = chat.list_sessions(session, user, created, last, short=True).with_raise()
+    data = client.list_sessions(user, created, last, output_mode="short").with_raise()
     table = format_table_results(data.data)
     click.echo(table)
-    session.close()
 
 
-def format_table_results(table_results):
+def format_table_results(table_results, short=True):
     return tabulate(table_results, headers="keys", tablefmt="fancy_grid")
 
 
@@ -249,7 +228,6 @@ def fill_params(params, params_dict=None):
 cli.add_command(ingest)
 cli.add_command(query)
 cli.add_command(initdb)
-cli.add_command(init_bankdb)
 cli.add_command(print_config)
 
 cli.add_command(list)

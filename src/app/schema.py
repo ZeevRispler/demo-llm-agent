@@ -1,11 +1,11 @@
 from enum import Enum
 from http.client import HTTPException
-from typing import List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 from pydantic import BaseModel
 
 
-class Role(str, Enum):
+class ChatRole(str, Enum):
     Human = "Human"
     AI = "AI"
     System = "System"
@@ -14,8 +14,12 @@ class Role(str, Enum):
 
 
 class Message(BaseModel):
-    role: Role
+    role: ChatRole
     content: str
+    html: Optional[str] = None
+    sources: Optional[List[dict]] = None
+    rating: Optional[int] = None
+    suggestion: Optional[str] = None
 
 
 class Conversation(BaseModel):
@@ -25,10 +29,14 @@ class Conversation(BaseModel):
     def __str__(self):
         return "\n".join([f"{m.role}: {m.content}" for m in self.messages])
 
-    def add_message(self, role, content):
-        self.messages.append(Message(role=role, content=content))
+    def add_message(self, role, content, sources=None):
+        self.messages.append(Message(role=role, content=content, sources=sources))
 
     def to_list(self):
+        return self.dict()["messages"]
+        # return self.model_dump(mode="json")["messages"]
+
+    def to_dict(self):
         return self.dict()["messages"]
         # return self.model_dump(mode="json")["messages"]
 
@@ -69,17 +77,32 @@ class PipelineEvent:
             "conversation": self.conversation.to_list(),
         }
 
+    def __getitem__(self, item):
+        return getattr(self, item)
 
-class IngestItem(BaseModel):
-    path: str
-    loader: str
-    metadata: Optional[List[Tuple[str, str]]] = None
-    version: Optional[str] = None
+
+class TerminateResponse(BaseModel):
+    success: bool = True
+    error: Optional[str] = None
+    resp: dict = {}
+
+    def with_raise(self, format=None) -> "TerminateResponse":
+        if not self.success:
+            format = format or "Pipeline step failed: %s"
+            raise ValueError(format % self.error)
+        return self
+
+
+class QueryItem(BaseModel):
+    question: str
+    session_id: Optional[str] = None
+    filter: Optional[List[Tuple[str, str]]] = None
+    collection: Optional[str] = None
 
 
 class ApiResponse(BaseModel):
     success: bool
-    data: Optional[Union[dict, list]] = None
+    data: Optional[Union[list, BaseModel, dict]] = None
     error: Optional[str] = None
 
     def with_raise(self, format=None) -> "ApiResponse":
@@ -95,13 +118,14 @@ class ApiResponse(BaseModel):
         return self
 
 
-class TerminateResponse(BaseModel):
-    success: bool = True
-    error: Optional[str] = None
-    resp: dict = {}
+class ApiDictResponse(ApiResponse):
+    data: Optional[dict] = None
 
-    def with_raise(self, format=None) -> "TerminateResponse":
-        if not self.success:
-            format = format or f"Pipeline step failed: %s"
-            raise ValueError(format % self.error)
-        return self
+
+class PromptConfig(BaseModel):
+    name: str
+    description: Optional[str] = None
+    labels: Optional[Dict[str, Union[str, None]]] = None
+    template: str
+    inputs: dict = None
+    llm_args: dict = None

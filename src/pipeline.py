@@ -1,25 +1,19 @@
-from src.chains.base import AppPipeline, HistorySaver, SessionLoader
-from src.chains.refine import RefineQuery
-from src.chains.retrieval import MultiRetriever
-from src.config import AppConfig, logger
-from src.chains.jewelry_agent import Agent
+from src.app.chains.base import HistorySaver, SessionLoader
+from src.app.chains.refine import RefineQuery
+from src.app.chains.retrieval import MultiRetriever
+from src.app.pipelines import app_server
 
 pipe_config = [
     SessionLoader(),
     RefineQuery(),
-    Agent(),
+    MultiRetriever(),
     HistorySaver(),
 ]
 
+pipelines = {
+    "default": pipe_config,
+}
 
-pipeline = None
 
-
-def initialize_pipeline(config: AppConfig, verbose=False):
-    """Initialize the pipeline"""
-    global pipeline
-    config.verbose = verbose or config.verbose
-    if pipeline is None:
-        pipeline = AppPipeline(config)
-        pipeline.graph = pipe_config
-    return pipeline
+app_server.add_pipelines(pipelines)
+app = app_server.to_fastapi(with_controller=True)
