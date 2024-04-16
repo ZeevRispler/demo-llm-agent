@@ -11,7 +11,7 @@ import pandas as pd
 def _generate_stocks(
     products: List[dict], items: List[dict], min_amount: int = 0, max_amount: int = 5
 ) -> List[dict]:
-    price_map = {"rings": 400, "bracelets": 800, "necklaces": 1000, "earrings": 200}
+    price_map = {"rings": 20, "bracelets": 40, "necklaces": 70, "earrings": 10}
     size_map = {
         "rings": [3, 5, 7, 9],
         "bracelets": [6.3, 6.7, 7.1, 7.9, 9],
@@ -22,9 +22,9 @@ def _generate_stocks(
     stocks = []
     for item in items:
         kind = next(p["kind"] for p in products if item["product_id"] == p["product_id"])
-        price = random.randint(1, 10) * 50 + price_map[kind]
+        price = random.randint(1, 10) * 5 + price_map[kind]
         if item["stones"] == "diamonds":
-            price *= 3
+            price *= 10
         if item["metals"] == "white gold":
             price += 200
         for size in size_map[kind]:

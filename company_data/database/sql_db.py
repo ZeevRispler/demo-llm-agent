@@ -104,7 +104,7 @@ class Item(Base):
     :arg description:               A description of the item.
     :arg colors:                    The colors of the item.
     :arg metals:                    The metals of the item. Can be one or more of the following metals: yellow gold,
-                                    white gold, pink gold, silver and platinum.
+                                    white gold, pink gold.
     :arg stones:                    The material of the item. Default is None (“no stones”).
     :arg stones_carat_total_weight: The total weight of the stones in the item.
     :arg image:                     The URL to the item's image.

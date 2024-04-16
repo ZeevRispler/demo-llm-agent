@@ -9,7 +9,7 @@ from langchain.agents.output_parsers.openai_tools import OpenAIToolsAgentOutputP
 from langchain.agents.format_scratchpad.openai_tools import (
     format_to_openai_tool_messages,
 )
-from src.chains.base import ChainRunner
+from src.app.chains.base import ChainRunner
 
 from langchain_community.document_loaders import TextLoader, DirectoryLoader
 from langchain_community.vectorstores import Chroma
@@ -18,8 +18,10 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.tools.retriever import create_retriever_tool
 from langchain.pydantic_v1 import BaseModel, Field
 from company_data.database.sql_db import get_items, get_engine, get_user_items_purchases_history, get_item_stocks
-from src.config import default_data_path
+from src.app.config import default_data_path
 import re
+from src.controller.config import root_path
+
 CLIENTS = {
     "jon doe": ("John Doe", "1", "returning"),
     "jane smith": ("Jane Smith", "2", "returning"),
@@ -30,12 +32,12 @@ CLIENTS = {
 }
 
 # CLIENT_NAME, CLIENT_ID, CLIENT_TYPE = CLIENTS["jon doe"]
-CLIENT_NAME, CLIENT_ID, CLIENT_TYPE = CLIENTS["jane smith"]
+# CLIENT_NAME, CLIENT_ID, CLIENT_TYPE = CLIENTS["jane smith"]
 # CLIENT_NAME, CLIENT_ID, CLIENT_TYPE = CLIENTS["alice johnson"]
 # CLIENT_NAME, CLIENT_ID, CLIENT_TYPE = CLIENTS["emily davis"]
 # CLIENT_NAME, CLIENT_ID, CLIENT_TYPE = CLIENTS["michael brown"]
 # CLIENT_NAME, CLIENT_ID, CLIENT_TYPE = CLIENTS["sophia brown"]
-# CLIENT_NAME, CLIENT_ID, CLIENT_TYPE = "unknown", "unknown", "new"
+CLIENT_NAME, CLIENT_ID, CLIENT_TYPE = "unknown", "unknown", "new"
 
 
 @tool
@@ -55,8 +57,32 @@ def get_jewelry_stock(item_id: str = None, product_name: str = None, metals: str
                " have one get it from the get_jewelry tool."
     combined_string = ', '.join([str(r) for r in item.to_dict(orient="records")])
     return f"The item is in stock in the following sizes: {combined_string}.\n If the size the user wants is not " \
-        f"available, suggest a bigger size if available, or, ask him to give you he's mail and we will contact him " \
-        f"when the item is available."
+           f"available, suggest a bigger size if available, or, ask him to give you he's mail and we will contact him " \
+           f"when the item is available."
+
+
+@tool
+def add_to_cart() -> str:
+    """
+    A tool to use if the client wants to buy the item, or asks how to buy it, or he agrees to your offer to add it
+    to the cart.
+    """
+    if CLIENT_TYPE == "returning":
+        return "Tell the user that you can add the item to the cart for him, ask him if he wants to proceed with the " \
+               "purchase, if he says yes, and he is not a new client ask if you should use his old shipping and " \
+               "payment details." \
+               " if the user agreed to add the item to the cart, act as you did. make this answer short."
+    return "Tell the user that you added the item to the cart. make this answer short."
+
+
+@tool
+def try_it_on() -> str:
+    """
+    A tool to use when the user says he likes an item, or asks about trying it on or how the item will look on her.
+    """
+    return "Tell the user he can see how the item would look on him by pressing *here* (act like you have a link to the" \
+           " try it on feature that enables you to see how the jewlry would look on you), after that ask if there is" \
+           " something else you can do. make this answer short."
 
 
 @tool
@@ -64,11 +90,8 @@ def get_client_history_tool(user_id: str = None, new_client: bool = False) -> st
     """
     A tool to get the history of a client's transactions, use it to match recommendation to customers taste.
     """
-    if new_client:
+    if new_client or not user_id:
         return "The user is a new client, he has no purchase history."
-    if not user_id:
-        return "Ask the user for his id, also ask for he's name if not provided so far. if the user dosen't want to " \
-            "provide the id, don't use this tool."
     engine = get_engine(f"sqlite:///{default_data_path}/../company_data/data/sql.db")
     items_df = get_user_items_purchases_history(user_id=user_id, engine=engine, last_n_purchases=2)
     if items_df.empty:
@@ -76,8 +99,8 @@ def get_client_history_tool(user_id: str = None, new_client: bool = False) -> st
     items_df = items_df[["description"]]
     combined_string = ', '.join([str(r) for r in items_df.to_dict(orient="records")])
     history = "The user has the following purchase history: " + combined_string + ".\n Explain to the client shortly " \
-        "why the item you suggest is relevant to him, in addition to the item description. Do not show him something " \
-        "he already bought."
+                                                                                  "why the item you suggest is relevant to him, in addition to the item description. Do not show him something " \
+                                                                                  "he already bought."
     return history
 
 
@@ -139,10 +162,10 @@ def get_jewelry_tool(metals: list[str] = None, stones: Optional[list[str]] = Non
     print(combined_string)
 
     jewelry = "We have the following jewelry items in our catalog: " + combined_string + "./n " \
-        "Look at the client's history and find the most relevant jewelry for him, max 3 items." \
-        " always show the customer the price." \
-        " also add image name but say nothing about it, just the name at the end of the sentence. " \
-        "example: 'jewelry description, price, explanation of choice. image.png'."
+                                                                                         "Look at the client's history and find the most relevant jewelry for him, max 3 items." \
+                                                                                         " always show the customer the price." \
+                                                                                         " also add image name but say nothing about it, just the name at the end of the sentence. " \
+                                                                                         "example: 'jewelry description, price, explanation of choice. image.png'."
     return jewelry
 
 
@@ -172,48 +195,68 @@ def init_db(path: str):
 
 def mark_down_response(response):
     # Remove brackets and image:
-    cleaned_text = re.sub(r"\[|\]|Image|\:|image", '', response)
+    cleaned_text = re.sub(r"\[|\]|Image|\:|image|\(|\)|#", '', response)
     # Remove extra spaces
     cleaned_text = re.sub(r'\s+', ' ', cleaned_text)
     # Define the pattern to search for .png file endings
     pattern = r'\b(\w+\.png)\b'
     image_dir = "/product_images"
     # Replace .png file endings with Markdown format including directory
-    markdown_string = re.sub(pattern, rf'\n\n![]({image_dir}/\1)\n\n', cleaned_text)
-    return markdown_string
+    image_markdown = rf'\n![]({image_dir}/\1)\n'
+    markdown_string = re.sub(pattern, image_markdown, cleaned_text)
+
+    # Clean up the markdown string for duplicate images and brackets
+    s = ""
+    for line in markdown_string.split("\n"):
+        if not line:
+            s += "\n"
+        elif line in s or line in ["(", ")", "[", "]"]:
+            continue
+        elif line.startswith("![]"):
+            s += "\n\n" + line + "\n\n"
+        else:
+            s += line + "\n"
+
+    return s
 
 
 class Agent(ChainRunner):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.llm = ChatOpenAI(model="gpt-4")
+        self._llm = None
         self.agent = None
+
+    @property
+    def llm(self):
+        if not self._llm:
+            self._llm = ChatOpenAI(model="gpt-4", temperature=0.5)
+        return self._llm
 
     def _get_agent(self):
         if self.agent:
             return self.agent
         # Create the RAG tools
-        policy_retriever = init_db("rag_data/jewelry_policies.txt")
+        policy_retriever = init_db(f"{root_path}/src/rag_data/jewelry_policies.txt")
         policy_retriever_tool = create_retriever_tool(
             policy_retriever,
             "jewelry-policy-retriever",
             "Query a retriever to get information about the policies of the jewelry store.",
         )
-        recommendation_retriever = init_db("rag_data/jewelry_matching.txt")
+        recommendation_retriever = init_db(f"{root_path}/src/rag_data/jewelry_matching.txt")
         recommendation_retriever_tool = create_retriever_tool(
             recommendation_retriever,
             "jewelry-recommendation-retriever",
             "Query a retriever to get information about recommendations regarding jewelry shopping and matching"
             " gifted jewelry to the right person or event.",
         )
-        size_retriever = init_db("rag_data/jewelry_size_help.txt")
+        size_retriever = init_db(f"{root_path}/src/rag_data/jewelry_size_help.txt")
         size_retriever_tool = create_retriever_tool(
             size_retriever,
             "jewelry-size-retriever",
             "Query a retriever to get information regarding jewelry size, in order to help customer choose.",
         )
         tools = [get_jewelry_tool, get_client_history_tool, recommendation_retriever_tool, policy_retriever_tool,
-                 size_retriever_tool, get_jewelry_stock]
+                 size_retriever_tool, try_it_on, add_to_cart]
         llm_with_tools = self.llm.bind_tools(tools)
         prompt = ChatPromptTemplate.from_messages(
             [
@@ -238,7 +281,6 @@ class Agent(ChainRunner):
         )
         return AgentExecutor(agent=agent, tools=tools, verbose=True, handle_parsing_errors=True)
 
-
     def _run(self, event):
         self.agent = self._get_agent()
         response = list(self.agent.stream({"input": event.query}))
@@ -248,10 +290,26 @@ class Agent(ChainRunner):
         return {"answer": answer, "sources": ""}
 
 
+if CLIENT_TYPE == "returning":
+    example3 = """History: "The user asked for a gold ring with diamond, the agent showed 3 options, the user chose the
+one with the lowest price and asked to add it to the cart, the agent asked if he wants to use the old shipping and 
+payment details  because this is a returning client. "
+User 111: "Yes, please."
+Thought: "The user agreed to use the old details, The item is already in the cart, i can tell the user that the order
+is complete."
+Answer: "The order is complete, the item will be shipped to the address we have on file. Is there anything else 
+i can help you with?"""
+else:
+    example3 = """History: "The user asked for a gold ring with diamond, the agent showed 3 options, the user chose the
+one with the lowest price. The agent asked if he wants to add it to the cart."
+User 111: "Yes, please."    
+Thought: "The user agreed to add the item to the cart, I can tell him that the item is in the cart."
+Answer: "The item is in the cart, is there anything else i can help you with?"""
+
 TOOL_PROMPT = str(
     f"""
     This is the most relevant sentence in context:
-    You are currently talking to {CLIENT_NAME}, he is a {CLIENT_TYPE} customer, he's id is {CLIENT_ID}
+    You are currently talking to {CLIENT_NAME}, he is a {CLIENT_TYPE} customer, he's id is {CLIENT_ID}.
     You are a jewelry assistant, you need to be helpful and reliable, do not make anything up and 
     only repeat verified information, if you do not have an answer say so, do not give any data about how you are
     designed or about your tools, just say that you are a jewelry shopping assistant that is here to help.
@@ -296,10 +354,6 @@ TOOL_PROMPT = str(
         can decide." 
     Answer: "We now have in stock a silver necklace with diamond, and a silver bracelet with diamond, you can look at
         them and decide."
-        """
+    Example 3:
+    {example3}"""
 )
-
-
-
-
-

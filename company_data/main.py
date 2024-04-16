@@ -1,10 +1,12 @@
 import os
 from sqlalchemy import create_engine
 import pandas as pd
-import database.sql_db as sql_db
+import company_data.database.sql_db as sql_db
+from pathlib import Path
 
 
-def init_sql_db(data_path: str = "./data", mock_data_path: str = "./mock_data", reset: bool = True):
+def init_sql_db(data_path: str = None, mock_data_path: str = None, reset: bool = True):
+
     """
     Initialize the SQL database and load the mock data if available.
 
@@ -12,6 +14,10 @@ def init_sql_db(data_path: str = "./data", mock_data_path: str = "./mock_data", 
     :param mock_data_path: Mock data path.
     :param reset:          Whether to reset the database.
     """
+    if not mock_data_path:
+        mock_data_path = str(Path(__file__).parent.absolute() / "mock_data")
+    if not data_path:
+        data_path = str(Path(__file__).parent.absolute() / "data")
     # Create the base data path if it doesn't exist:
     if not os.path.exists(data_path):
         os.makedirs(data_path)
@@ -23,14 +29,14 @@ def init_sql_db(data_path: str = "./data", mock_data_path: str = "./mock_data", 
     # Drop the tables if reset is required:
     if reset:
         sql_db.drop_tables(engine=engine)
-
+    print("Creating tables")
     # Create the tables:
     sql_db.create_tables(engine=engine)
 
     # Check if needed to load mock data:
     if not mock_data_path:
         return
-
+    print("Loading mock data")
     # Load the mock data:
     products = pd.read_csv(os.path.join(mock_data_path, "products.csv"))
     items = pd.read_csv(os.path.join(mock_data_path, "items.csv"))
@@ -51,10 +57,6 @@ def init_sql_db(data_path: str = "./data", mock_data_path: str = "./mock_data", 
 
 
 if __name__ == "__main__":
-    init_sql_db()
-    sql_connection_url = f"sqlite:///{'./'}/sql.db"
-    engine = sql_db.get_engine(f"sqlite:///data/sql.db")
-    items = sql_db.get_items(engine=engine, kinds=["rings", "bracelets"], stones=["no stones"], metals=["white gold"])
-    print(items)
-    items = sql_db.get_user_items_purchases_history(engine=engine, user_id="6")
-    print(items)
+    data_path = str(Path(__file__).parent.absolute() / "data")
+    init_sql_db(data_path=data_path)
+

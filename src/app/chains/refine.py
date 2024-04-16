@@ -1,9 +1,10 @@
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 
-from ..config import get_llm, logger
-from ..schema import PipelineEvent
-from .base import ChainRunner
+from src.app.config import get_llm, logger
+from src.app.schema import PipelineEvent
+
+from src.app.chains.base import ChainRunner
 
 _refine_prompt_template = """
 You are a helpful AI assistant, given the following conversation and a follow up request, rephrase the follow up request to be a standalone request, keeping the same user language.

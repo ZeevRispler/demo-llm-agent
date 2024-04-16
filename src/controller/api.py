@@ -167,7 +167,7 @@ async def list_sessions(
 ):
     user = None if username and username == "all" else (username or auth.username)
     return client.list_sessions(
-        user, created_after=created, last=last, output_mode=mode, session=session
+        "guest", created_after=created, last=last, output_mode=mode, session=session
     )
 
 
