@@ -1,7 +1,7 @@
 import os
 from sqlalchemy import create_engine
 import pandas as pd
-import company_data.database.sql_db as sql_db
+import database.sql_db as sql_db
 from pathlib import Path
 
 

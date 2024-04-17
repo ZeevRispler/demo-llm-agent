@@ -21,6 +21,7 @@ from company_data.database.sql_db import get_items, get_engine, get_user_items_p
 from src.app.config import default_data_path
 import re
 from src.controller.config import root_path
+from src.app.chains.retrieval import MultiRetriever
 
 CLIENTS = {
     "jon doe": ("John Doe", "1", "returning"),
@@ -171,25 +172,27 @@ def get_jewelry_tool(metals: list[str] = None, stones: Optional[list[str]] = Non
 
 def init_db(path: str):
     # we can declare extension, display progress bar, use multithreading
-    if os.path.isdir(path):
-        loader = DirectoryLoader(path, glob="*.txt")
-    else:
-        loader = TextLoader(path)
-
-    docs = loader.load()
-
-    # Split document into chunks
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=150, chunk_overlap=0)
-    texts = text_splitter.split_documents(docs)
-
-    # Here is where we add in the fake source information
-    for i, doc in enumerate(texts):
-        doc.metadata["page_chunk"] = i
-
-    # Create our retriever
-    embeddings = OpenAIEmbeddings()
-    vectorstore = Chroma.from_documents(texts, embeddings, collection_name="jewelry")
-    retriever = vectorstore.as_retriever()
+    # if os.path.isdir(path):
+    #     loader = DirectoryLoader(path, glob="*.txt")
+    # else:
+    #     loader = TextLoader(path)
+    #
+    # docs = loader.load()
+    #
+    # # Split document into chunks
+    # text_splitter = RecursiveCharacterTextSplitter(chunk_size=150, chunk_overlap=0)
+    # texts = text_splitter.split_documents(docs)
+    #
+    # # Here is where we add in the fake source information
+    # for i, doc in enumerate(texts):
+    #     doc.metadata["page_chunk"] = i
+    #
+    # # Create our retriever
+    # embeddings = OpenAIEmbeddings()
+    # vectorstore = Chroma.from_documents(texts, embeddings, collection_name="jewelry")
+    # retriever = vectorstore.as_retriever()
+    retriever = MultiRetriever(default_collection="default")
+    retriever = retriever._get_retriever("default")
     return retriever
 
 
@@ -225,6 +228,7 @@ class Agent(ChainRunner):
         super().__init__(*args, **kwargs)
         self._llm = None
         self.agent = None
+        self.retriever = None
 
     @property
     def llm(self):
@@ -236,27 +240,32 @@ class Agent(ChainRunner):
         if self.agent:
             return self.agent
         # Create the RAG tools
-        policy_retriever = init_db(f"{root_path}/src/rag_data/jewelry_policies.txt")
+        retriever = MultiRetriever(default_collection="default", context=self.context)
+        retriever.post_init()
+        self.retriever = retriever._get_retriever("default")
+        # policy_retriever = init_db(f"{root_path}/src/rag_data/jewelry_policies.txt")
         policy_retriever_tool = create_retriever_tool(
-            policy_retriever,
+            self.retriever.chain.retriever.vectorstore.as_retriever(),
             "jewelry-policy-retriever",
             "Query a retriever to get information about the policies of the jewelry store.",
         )
-        recommendation_retriever = init_db(f"{root_path}/src/rag_data/jewelry_matching.txt")
+        # recommendation_retriever = init_db(f"{root_path}/src/rag_data/jewelry_matching.txt")
         recommendation_retriever_tool = create_retriever_tool(
-            recommendation_retriever,
+            self.retriever.chain.retriever.vectorstore.as_retriever(),
             "jewelry-recommendation-retriever",
             "Query a retriever to get information about recommendations regarding jewelry shopping and matching"
             " gifted jewelry to the right person or event.",
         )
-        size_retriever = init_db(f"{root_path}/src/rag_data/jewelry_size_help.txt")
+        # size_retriever = init_db(f"{root_path}/src/rag_data/jewelry_size_help.txt")
         size_retriever_tool = create_retriever_tool(
-            size_retriever,
+            self.retriever.chain.retriever.vectorstore.as_retriever(),
             "jewelry-size-retriever",
             "Query a retriever to get information regarding jewelry size, in order to help customer choose.",
         )
-        tools = [get_jewelry_tool, get_client_history_tool, recommendation_retriever_tool, policy_retriever_tool,
-                 size_retriever_tool, try_it_on, add_to_cart]
+        tools = [get_jewelry_tool, get_client_history_tool, policy_retriever_tool,
+                 recommendation_retriever_tool,
+                 size_retriever_tool,
+                 try_it_on, add_to_cart]
         llm_with_tools = self.llm.bind_tools(tools)
         prompt = ChatPromptTemplate.from_messages(
             [
