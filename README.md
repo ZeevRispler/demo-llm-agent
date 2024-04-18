@@ -67,6 +67,9 @@ python -m company_data.main
 
 ```shell
 python -m src.main ingest ./src/rag_data/jewelry_size_help.txt
+python -m src.main ingest ./src/rag_data/jewelry_policies.txt
+python -m src.main ingest ./src/rag_data/jewelry_matching.txt
+
 ```
 > do for every file you want to ingest (in rag data folder)
 
@@ -76,11 +79,12 @@ python -m src.main ingest ./src/rag_data/jewelry_size_help.txt
 ## To start the API server:
 
 ```shell
-uvicorn src.controller.api:app
 uvicorn src.pipeline:app
 
 ```
+# Additional steps for the UI not needed for now
 
+```shell
 ## To start Vizro UI:
 
 ```shell
