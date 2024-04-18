@@ -42,6 +42,13 @@ Substitute the `OPENAI_API_KEY` and `OPENAI_API_BASE` with your own key and base
 
 # Getting it to work
 
+## Installation
+```shell
+pip install -r requirements.txt
+```
+
+> May nee to add stuff
+>  If you get protobuf error, try to install it with `conda install protobuf==3.20.3`
 Make sure there `.env` file is set before running the following commands, and if needed make modifications to the config
 
 ## Initialize the database:
@@ -49,6 +56,20 @@ Make sure there `.env` file is set before running the following commands, and if
 ```shell
 python -m src.main initdb
 ```
+
+## Initialize the product database:
+
+```shell
+python -m company_data.main
+```
+
+## Ingest data into the vector database:
+
+```shell
+python -m src.main ingest ./src/rag_data/jewelry_size_help.txt
+```
+> do for every file you want to ingest (in rag data folder)
+
 
 > should be done only once, or when we want to erase the DB and start fresh 
 
