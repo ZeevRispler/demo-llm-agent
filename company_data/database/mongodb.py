@@ -2,6 +2,8 @@ from pymongo import MongoClient
 from typing import List, Literal
 import pandas as pd
 import certifi
+from langchain_mongodb.vectorstore import MongoDBAtlasVectorSearch
+
 
 def get_engine(connection_url: str) -> MongoClient:
     """
@@ -79,3 +81,37 @@ def get_items(
     items = collection.aggregate(pipeline)
 
     return pd.DataFrame(items)
+
+
+def get_user_items_purchases_history(
+    engine: MongoClient, user_id: str, last_n_purchases: int = 5
+) -> pd.DataFrame:
+    db = engine["jewellery"]
+    collection = db["purchases_explode"]
+
+    pipeline = [
+        {"$match": {"user_id": user_id}},
+        {"$sort": {"date": -1}},
+        {"$limit": last_n_purchases},
+        {"$project": {"_id": 0, "purchases": 1, "purhcases.stocks": 0, "average_rating": {"$avg": "$reviews.rating"}}},
+    ]
+
+    items = list(collection.aggregate(pipeline))
+    items = [item["purchases"] for item in items]
+    return pd.DataFrame(items)
+
+
+class MongoDBAtlasVectorSearchIgz(MongoDBAtlasVectorSearch):
+    def __init__(self, **kwargs):
+        self._connection_string = kwargs.get("connection_string")
+        self._namespace = kwargs.get("namespace")
+        self._client = MongoClient(self._connection_string, tlsCAFile=certifi.where())
+        self._collection = self._client[self._namespace.split(".")[0]][self._namespace.split(".")[1]]
+        self._embedding = kwargs.get("embedding")
+        self._index_name = kwargs.get("index_name", "vector_index")
+        self._text_key = kwargs.get("text_key", "text")
+        self._embedding_key = kwargs.get("embedding_key", "embedding")
+        self._relevance_score_fn = kwargs.get("relevance_score_fn", "cosine")
+        
+
+
