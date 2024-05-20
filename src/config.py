@@ -75,6 +75,7 @@ is_local_config = os.environ.get("IS_LOCAL_CONFIG", "0").lower().strip() in [
     "true",
     "1",
 ]
+print("Is local config true", is_local_config)
 config_path = os.environ.get("AGENT_CONFIG_PATH")
 
 if config_path:
@@ -99,6 +100,7 @@ embeddings_shortcuts = {
 vector_db_shortcuts = {
     "milvus": "langchain.vectorstores.Milvus",
     "chroma": "langchain.vectorstores.chroma.Chroma",
+    "mongodb": "company_data.database.mongodb.MongoDBAtlasVectorSearchIgz",
 }
 
 llm_shortcuts = {
